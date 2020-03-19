@@ -16,7 +16,7 @@ public class StudentRepository {
 //        Connection con = DbUtil.getConnection();
 
         try {
-            if (isEmpty(student)) {
+            if (isEmpty(student.getId())) {
                 String sql =
                         "insert into student(id,name,gender,admissionYear,birthday,classID) values(?,?,?,?,?,?)";
                 PreparedStatement ptmt = con.prepareStatement(sql);
@@ -35,8 +35,8 @@ public class StudentRepository {
         }
     }
 
-    private boolean isEmpty(Student student) {
-        return String.format("select from table where id=?", student.getId()).isEmpty();
+    private boolean isEmpty(String id) {
+        return String.format("select from table where id=?", id).isEmpty();
     }
 
     public List<Student> query() {
@@ -104,7 +104,7 @@ public class StudentRepository {
 //        Connection con = DbUtil.getConnection();
 
         try {
-            if (!isEmpty(student)) {
+            if (!isEmpty(student.getId())) {
                 String sql = "update student set id=?,name=?,gender=?,admissionYear=?,birthday=?,classID=? where id=?";
                 PreparedStatement ptmt = con.prepareStatement(sql);
 
@@ -128,6 +128,20 @@ public class StudentRepository {
     public void delete(String id) {
 //        Connection con = DbUtil.getConnection();
 
-        String sql = String.format("update student where id=?", id);
+        try {
+            if (!isEmpty(id)) {
+
+                String sql = "delete from student where id=?";
+                PreparedStatement ptmt = con.prepareStatement(sql);
+
+                ptmt.setString(1, id);
+
+                ptmt.execute();
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
     }
 }
